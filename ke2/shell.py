@@ -1,11 +1,14 @@
-from asyncio import subprocess
-import sys
-from icecream import ic
-import shlex
-from string import Formatter
-from typing import Any
-import re
 import asyncio
+import re
+import shlex
+import sys
+from asyncio import subprocess
+from typing import Any, Union
+
+try:
+    from icecream import ic
+except ImportError:
+    pass
 
 # class ShlexFormatter(Formatter):
 
@@ -102,12 +105,12 @@ class ProcessFuture:
         task = asyncio.create_task(self._call())
         return task
 
-    def __floordiv__(self, other) -> ProcessFutureParallel:
-        return ProcessFutureParallel([self, other])
-
-    def __rshift__(self, cmd: str) -> ProcessFutureParallel:
-        process_future = ProcessFuture(cmd, self.verbose)
-        return ProcessFutureParallel([self, process_future])
+    def __rshift__(self, cmd: Union[str, 'ProcessFuture']) -> ProcessFutureParallel:
+        if isinstance(cmd, str):
+            fut = ProcessFuture(cmd, self.verbose)
+        else:
+            fut = cmd
+        return ProcessFutureParallel([self, fut])
 
 
 class Shell:
@@ -119,11 +122,10 @@ class Shell:
         self.verbose = verbose
 
     def __rshift__(self, cmd: str) -> ProcessFuture:
-
         return ProcessFuture(cmd, self.verbose)
 
 
-def substitute(arg) -> str:
+def substitute(arg: Any) -> str:
     if isinstance(arg, ProcessOutput):
         return re.sub(r'\n$', '', arg.stdout)
     else:
@@ -147,4 +149,4 @@ def green_bright(text: str) -> str:
 
 
 if __name__ == '__main__':
-    print(green_bright('fuck you'))
+    print(green_bright('test green bright'))

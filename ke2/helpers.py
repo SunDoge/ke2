@@ -1,11 +1,14 @@
 import asyncio
-import inspect
 import importlib
-from typing import Callable, TypeVar
-from icecream import ic
 import importlib.util
+import inspect
 from pathlib import Path
+from typing import Callable, TypeVar
 
+try:
+    from icecream import ic
+except ImportError:
+    pass
 
 T = TypeVar('T')
 
