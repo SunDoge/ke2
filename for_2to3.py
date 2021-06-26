@@ -1,1 +1,0 @@
-execfile('tests/test_ke2.py')
