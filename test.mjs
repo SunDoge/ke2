@@ -1,1 +1,3 @@
-console.log(process)
+import chalk from 'chalk'
+
+console.log(chalk.greenBright)
